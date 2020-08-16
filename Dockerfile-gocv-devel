@@ -1,17 +1,22 @@
-FROM ubuntu:18.04
+FROM golang:1.14-buster
 
-RUN apt-get update -y && \
+RUN sed -i "s/deb.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list && \
+    sed -i "s/security.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list && \
+    apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get -y --no-install-recommends install zip unzip golang pkg-config build-essential cmake curl git ca-certificates libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev
-
-ENV GOPATH /root/go
+    apt-get -y --no-install-recommends install zip unzip cmake vim pkg-config build-essential ca-certificates libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev
 
 RUN go get -u -d gocv.io/x/gocv && \
     cd $GOPATH/src/gocv.io/x/gocv && \
-    git checkout v0.24.0
+    git checkout v0.24.0 && \
     sed -i "s/sudo //g" Makefile && \
     sed -i "s/github.com/baetyl.cdn.bcebos.com/g" Makefile && \
     make download && \
+    sed -i "s/raw.githubusercontent.com/baetyl.cdn.bcebos.com/g" /tmp/opencv/opencv-4.4.0/3rdparty/ippicv/ippicv.cmake && \
+    sed -i "s/raw.githubusercontent.com/baetyl.cdn.bcebos.com/g" /tmp/opencv/opencv_contrib-4.4.0/modules/xfeatures2d/cmake/download_vgg.cmake && \
+    sed -i "s/raw.githubusercontent.com/baetyl.cdn.bcebos.com/g" /tmp/opencv/opencv_contrib-4.4.0/modules/xfeatures2d/cmake/download_boostdesc.cmake
+
+RUN cd $GOPATH/src/gocv.io/x/gocv && \
     make build && \
     make sudo_install && \
     make clean && \

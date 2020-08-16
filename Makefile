@@ -1,20 +1,16 @@
-PREFIX?=/usr/local
-VERSION?=latest
-SRC=$(wildcard *.go)
+MODULE:=baetyl-video-infer
 
 all: build
 
-build: $(SRC)
-	@echo "BUILD $@"
-	@go build ${GO_FLAGS} .
+build:
+	@env GO111MODULE=on GOPROXY=https://goproxy.cn go build -o $(MODULE) .
 
 image: build
-	@echo "BUILDX $<"
-	@docker build -t $(DOCKER_REPO)$<$(IMAGE_SUFFIX):$(VERSION) .
+	@docker build -t $(MODULE) .
 
 .PHONY: clean
 clean:
-	rm -f baetyl-video-infer package.zip
+	rm -f $(MODULE)
 
 .PHONY: rebuild
-rebuild: clean all
+rebuild: clean build
