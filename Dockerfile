@@ -6,8 +6,8 @@ RUN cd /root/go/src/github.com/baetyl/baetyl-video-infer/ && \
 
 FROM debian:buster
 
-RUN sed -i "s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
-    sed -i "s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g" /etc/apt/sources.list && \
+RUN sed -i "s/deb.debian.org/mirrors.baidubce.com/g" /etc/apt/sources.list && \
+    sed -i "s/security.debian.org/mirrors.baidubce.com/g" /etc/apt/sources.list && \
     apt-get update -y && \
     apt-get upgrade -y && \
     apt-get -y --no-install-recommends install pkg-config libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev

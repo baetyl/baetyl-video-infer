@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/baetyl/baetyl-go/v2/context"
+	"github.com/baetyl/baetyl-go/v2/http"
 	"github.com/baetyl/baetyl-go/v2/log"
 	"gocv.io/x/gocv"
 )
@@ -17,7 +18,7 @@ func main() {
 			return err
 		}
 		// create a broker client
-		bc, err := ctx.NewBrokerClient()
+		bc, err := ctx.NewBrokerClient(cfg.Broker)
 		if err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ func main() {
 		}
 		defer video.Close()
 		// create function clients
-		fc, err := ctx.NewFunctionHttpClient()
+		fc, err := newFunctionClient(cfg.Function)
 		if err != nil {
 			return err
 		}
@@ -84,4 +85,13 @@ func main() {
 			blob.Close()
 		}
 	})
+}
+
+// TODO: remove
+func newFunctionClient(cfg http.ClientConfig) (*http.Client, error) {
+	ops, err := cfg.ToClientOptions()
+	if err != nil {
+		return nil, err
+	}
+	return http.NewClient(ops), nil
 }

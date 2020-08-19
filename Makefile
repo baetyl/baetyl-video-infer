@@ -14,3 +14,7 @@ clean:
 
 .PHONY: rebuild
 rebuild: clean build
+
+.PHONY: fmt
+fmt:
+	go fmt ./...

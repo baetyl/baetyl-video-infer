@@ -1,10 +1,17 @@
 package main
 
+import (
+	"github.com/baetyl/baetyl-go/v2/mqtt"
+	"github.com/baetyl/baetyl-go/v2/http"
+)
+
 // Config the configuration of this video inference module
 type Config struct {
-	Video     VideoInfo      `yaml:"video" json:"video"`
-	Infer     InferInfo      `yaml:"infer" json:"infer"`
-	Process   ProcessInfo    `yaml:"process" json:"process"`
+	Function http.ClientConfig `yaml:"function,omitempty" json:"function,omitempty"`
+	Broker   mqtt.ClientConfig `yaml:"broker" json:"broker"`
+	Video    VideoInfo         `yaml:"video" json:"video"`
+	Infer    InferInfo         `yaml:"infer" json:"infer"`
+	Process  ProcessInfo       `yaml:"process" json:"process"`
 }
 
 // VideoInfo the video configuration

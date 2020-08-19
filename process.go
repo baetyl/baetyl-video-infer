@@ -59,7 +59,7 @@ func (c content) qos() uint32 {
 // Process the image processor
 type Process struct {
 	cfg ProcessInfo
-	bc *mqtt.Client
+	bc  *mqtt.Client
 	fc  *http.Client
 
 	size image.Point
