@@ -1,4 +1,4 @@
-FROM gocv-devel:v0.24.0-amd64 as devel
+FROM gocv-devel:v0.24.0 as devel
 COPY * /root/go/src/github.com/baetyl/baetyl-video-infer/
 RUN cd /root/go/src/github.com/baetyl/baetyl-video-infer/ && \
     make build
