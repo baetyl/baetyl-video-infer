@@ -1,23 +1,18 @@
-FROM golang:1.14-buster
+FROM --platform=$TARGETPLATFORM  golang:1.14-buster
 
-RUN sed -i "s/deb.debian.org/mirrors.ustc.edu.cn/g" /etc/apt/sources.list && \
-    sed -i "s/security.debian.org/mirrors.ustc.edu.cn/g" /etc/apt/sources.list && \
-    apt-get update -y && \
+RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get -y --no-install-recommends install zip unzip cmake vim pkg-config build-essential ca-certificates libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev
 
-RUN env GO111MODULE=on GOPROXY=https://goproxy.cn go get -u -d gocv.io/x/gocv && \
-    cd $GOPATH/src/gocv.io/x/gocv && \
+RUN go get -u -d gocv.io/x/gocv && \
+    cd /go/src/gocv.io/x/gocv && \
     git checkout v0.24.0 && \
     sed -i "s/sudo //g" Makefile && \
-    sed -i "s/github.com/baetyl.cdn.bcebos.com/g" Makefile && \
-    make download && \
-    sed -i "s/raw.githubusercontent.com/baetyl.cdn.bcebos.com/g" /tmp/opencv/opencv-4.4.0/3rdparty/ippicv/ippicv.cmake && \
-    sed -i "s/raw.githubusercontent.com/baetyl.cdn.bcebos.com/g" /tmp/opencv/opencv_contrib-4.4.0/modules/xfeatures2d/cmake/download_vgg.cmake && \
-    sed -i "s/raw.githubusercontent.com/baetyl.cdn.bcebos.com/g" /tmp/opencv/opencv_contrib-4.4.0/modules/xfeatures2d/cmake/download_boostdesc.cmake
+    make download
 
-RUN cd $GOPATH/src/gocv.io/x/gocv && \
+RUN cd /go/src/gocv.io/x/gocv && \
     make build && \
+#   make build_raspi && \
     make sudo_install && \
     make clean && \
     make verify
