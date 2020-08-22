@@ -12,7 +12,6 @@ RUN go get -u -d gocv.io/x/gocv && \
 
 RUN cd /go/src/gocv.io/x/gocv && \
     make build && \
-#   make build_raspi && \
     make sudo_install && \
     make clean && \
     make verify
