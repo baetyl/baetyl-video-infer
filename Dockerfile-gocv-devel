@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM  golang:1.14-buster
+FROM --platform=$TARGETPLATFORM golang:1.14-buster
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
