@@ -1,12 +1,13 @@
 MODULE:=baetyl-video-infer
+BUILD_TAGS:=
 
 all: build
 
 build:
-	@env GO111MODULE=on GOPROXY=https://goproxy.cn go build -o $(MODULE) .
+	env GO111MODULE=on GOPROXY=https://goproxy.cn go build -tags $(BUILD_TAGS) -o $(MODULE) .
 
 image: build
-	@docker build -t $(MODULE) .
+	docker build -t $(MODULE) .
 
 .PHONY: clean
 clean:
