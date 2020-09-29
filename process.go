@@ -84,7 +84,7 @@ func (p *Process) Before(img gocv.Mat) gocv.Mat {
 
 // After processes image after inference
 func (p *Process) After(img gocv.Mat, results gocv.Mat, elapsedTime float64, captureTime time.Time) error {
-	log.L().Sugar().Debugf("type: %s total: %s size: %s", results.Type(), results.Total(), results.Size())
+	log.L().Sugar().Debugf("type: %s total: %d size: %v", results.Type(), results.Total(), results.Size())
 
 	s := time.Now()
 	out, err := p.fc.Call(p.cfg.After.Function.Name, results.ToBytes())

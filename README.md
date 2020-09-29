@@ -4,36 +4,67 @@ The baetyl-video-infer module is an official module of [BAETYL](https://baetyl.i
 
 In addition, baetyl-video-infer module is highly integrated with other modules of BAETYL framework empowering the edge AI and some industry scenes. Besides, baetyl-video-infer also provides accelerated processing support for AI models based on CPU and specific hardware (such as OpenCL(OpenVINO, INFERENCE_ENGINE)).
 
-## Build
+## Build Program
 
 The baetyl-video-infer module is depend on [GoCV](https://github.com/hybridgroup/gocv). Please make sure GoCV works properly before build.
 
 ```shell
-go get github.com/baetyl/baetyl
-cd $GOPATH/src/github.com/baetyl/baetyl
-make rebuild # build baetyl-video-infer
+go get github.com/baetyl/baetyl-video-infer
+cd $GOPATH/src/github.com/baetyl/baetyl-video-infer
+make build # build baetyl-video-infer
 ```
 
-## Docker support
+## Build Image
 
-As above description, baetyl-video-infer module now can support CPU and specific hardware(Intel GPU, as known as OpenCL) for AI models inference. For the CPU, baetyl can support Linux-armv7, Linux-arm64, Linux-amd64, Linux-386, Darwin-amd64 platforms. And also provides accelerated processing support for AI models due to Intel GPU(OpenCL) of [OpenVINO framework](https://docs.openvinotoolkit.org/latest/index.html).
+As above description, baetyl-video-infer module now can support CPU and specific hardware(Intel GPU, as known as OpenCL) for AI models inference. For the CPU, baetyl can support Linux-armv7, Linux-arm64, Linux-amd64 platforms, and provides accelerated processing support for AI models due to Intel GPU(OpenCL) of [OpenVINO framework](https://docs.openvinotoolkit.org/latest/index.html).
 
 ```shell
 # CPU
-docker build -t hub.baidubce.com/baetyl-bata/baetyl-gocv41:0.1.6-devel -f Dockerfile-gocv41-devel . # build devel-image for CPU
-docker build -t hub.baidubce.com/baetyl-beta/baetyl-video-infer:0.1.6 -f Dockerfile . # build baetyl-video-infer image for CPU
+make image # build image for CPU
 
 # OpenVINO(OpenCL)
-docker build -t hub.baidubce.com/baetyl-beta/baetyl-openvino:0.1.6-devel -f Dockerfile-openvino-devel . # build devel-image for OpenVINO
-docker build -t hub.baidubce.com/baetyl-beta/baetyl-openvino:0.1.6-gocv41-devel -f Dockerfile-openvino-gocv41-devel . # build devel-image for OpenVINO and GoCV(OpenCV version is 4.1.0)
-docker build -t hub.baidubce.com/baetyl-beta/baetyl-video-infer:0.1.6-openvino -f Dockerfile-openvino . # build baetyl-video-infer image of OpenVINO support
+make image-openvino # build image for OpenVINO
 ```
 
 **NOTE**: 
 
-- For OpenVINO(OpenCL), now only support Linux-amd64 platform;
+- For OpenVINO(OpenCL), now only support linux/amd64 platform;
 - For CPU, cross compile is not support.
 
-## How to use
+## Configuration
 
-Please refer to [Image-capuring-and-AI-model-inference-with-video-infer-service](https://docs.baetyl.io/en/latest/guides/Image-capturing-and-AI-model-inference-with-video-infer-service.html).
+```yaml
+video:
+  uri: [MUST] The video file path or camera address. 
+    # For IP camera, the configuration just like `rtsp://<username>:<password>@<ip>:<port>/Streaming/channels/<stream_number>/`
+      # `<username>` and `<password>` are the login authentication element
+      # `<ip>` is the IP-address of camera
+      # `<port>` is the port number of RTSP protocol, the default value is `554`
+      # `<stream_number>` is the channel number, if it is equal to `1`, it indicates that the main stream is being captured; if it is equal to `2`, it indicates that the secondary stream is being captured
+    # For USB camera, the configuration just like "0"(represents mapping device `/dev/video0` into container, also should be mounted on video infer service)
+    # For video file, the configuration just like `var/db/baetyl/data/test.mp4`(mount the volume(store the video file) on video infer service)
+  limit:
+    fps: [MUST] The max number of video frames handled by inference per second. If the video fps is N, limit.fps is M, then Ceil(N/M) - 1 frames will be skipped.
+process: 
+  before: creates 4-dimensional blob from image. Optionally resizes and crops image from center, subtract mean values, scales values by scalefactor, swap Blue and Red channels. More detailed contents please refer to https://docs.opencv.org/4.1.1/d6/d0f/group__dnn.html#ga29f34df9376379a603acd8df581ac8d7.
+    scale: multiplier for image values.
+    swaprb: flag which indicates that swap first and last channels in 3-channel image is necessary. 
+    width: width of spatial size for output image.
+    hight: hight of spatial size for output image.
+    mean: scalar with mean values which are subtracted from channels. Values are intended to be in (mean-R, mean-G, mean-B) order if image has BGR ordering and swapRB is true.
+      v1: blue component of type Scalar(Scalar is a 4-element(v1, v2, v3, v4) vector widely used in OpenCV to pass pixel values).
+      v2: green component of type Scalar.
+      v3: red component of type Scalar.
+      v4: alpha component of type Scalar.
+    crop: flag which indicates whether image will be cropped after resize or not.
+  infer:
+    model: [MUST] The path of model file, more detailed contents please refer to https://docs.opencv.org/4.1.1/d6/d0f/group__dnn.html#ga3b34fe7a29494a6a4295c169a7d32422.
+    config: [MUST] The path of model config file, more detailed contents please refer to https://docs.opencv.org/4.1.1/d6/d0f/group__dnn.html#ga3b34fe7a29494a6a4295c169a7d32422.
+    backend: [Optional] The network backend which is used to improve inference efficiency. Now support `halide`, `openvino`, `opencv`, `vulkan` and `default`. More detailed contents please refer to https://docs.opencv.org/4.1.1/d6/d0f/group__dnn.html#ga186f7d9bfacac8b0ff2e26e2eab02625.
+    device: [Optional] The target device of DNN processing. Now support `cpu`(default), `fp32`, `fp16`, `vpu`, `vulkan` and `fpga`. More detailed contents please refer to https://docs.opencv.org/4.1.1/d6/d0f/group__dnn.html#ga709af7692ba29788182cf573531b0ff5.
+  after:
+    function: 
+      name: [MUST] The name of the function that handle the inference result.
+logger:
+  filename: If the path is specified, writes log to the file, otherwise writes to stdout.
+  level: The log level, support `debug`、`info`(default)、`warn` and `error`.

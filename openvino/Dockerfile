@@ -1,12 +1,15 @@
-FROM baetyl-video-infer-devel:openvino-amd64 as devel
+FROM hub.baidubce.com/baetyl/openvino-go-devel:2020.4 as devel
+COPY * /root/go/baetyl-video-infer/
+RUN cd /root/go/baetyl-video-infer/ && \
+    make build GO_TAGS="-tags openvino"
 
-FROM openvino/ubuntu18_runtime:2020.4
+FROM hub.baidubce.com/baetyl/openvino_runtime:2020.4
 
 USER root
 WORKDIR /
 
 # baetyl-video-infer
-COPY --from=devel /root/go/baetyl-video-infer/baetyl-video-infer /bin/
+COPY --from=devel /root/go/baetyl-video-infer/output/baetyl-video-infer /bin/
 
 ENV INTEL_OPENVINO_DIR "/opt/intel/openvino"
 ENV INTEL_CVSDK_DIR "${INTEL_OPENVINO_DIR}"

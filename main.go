@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/baetyl/baetyl-go/v2/context"
+	"github.com/baetyl/baetyl-go/v2/errors"
 	"github.com/baetyl/baetyl-go/v2/http"
 	"github.com/baetyl/baetyl-go/v2/log"
 	"gocv.io/x/gocv"
@@ -12,45 +13,46 @@ import (
 func main() {
 	context.Run(func(ctx context.Context) error {
 		var cfg Config
-		// load custom config
 		err := ctx.LoadCustomConfig(&cfg)
 		if err != nil {
-			return err
+			return errors.Trace(err)
 		}
-		// create a broker client
-		bc, err := ctx.NewBrokerClient(cfg.Broker)
+
+		bcfg, err := ctx.NewSystemBrokerClientConfig()
 		if err != nil {
-			return err
+			return errors.Trace(err)
 		}
-		bc.Start(nil)
-		defer bc.Close()
-		//  create inference
-		infer, err := NewInfer(cfg.Infer)
+		bcli, err := ctx.NewBrokerClient(bcfg)
 		if err != nil {
-			return err
+			return errors.Trace(err)
+		}
+		bcli.Start(nil)
+		defer bcli.Close()
+
+		infer, err := NewInfer(cfg.Process.Infer)
+		if err != nil {
+			return errors.Trace(err)
 		}
 		defer infer.Close()
-		// create video
+
 		video, err := NewVideo(cfg.Video)
 		if err != nil {
-			return err
+			return errors.Trace(err)
 		}
 		defer video.Close()
-		// create function clients
-		fc, err := newFunctionClient(cfg.Function)
+
+		fcli, err := ctx.NewFunctionHttpClient()
 		if err != nil {
-			return err
+			return errors.Trace(err)
 		}
-		// create process
-		proc := NewProcess(cfg.Process, bc, fc)
 
 		var s time.Time
 		img := gocv.NewMat()
 		defer img.Close()
-		quit := ctx.WaitChan()
+		proc := NewProcess(cfg.Process, bcli, fcli)
 		for {
 			select {
-			case <-quit:
+			case <-ctx.WaitChan():
 				return nil
 			default:
 			}
