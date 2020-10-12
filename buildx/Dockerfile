@@ -6,8 +6,7 @@ RUN cd /root/go/baetyl-video-infer/ && \
 FROM --platform=$TARGETPLATFORM debian:buster
 
 RUN apt-get update -y \
- && apt-get install -y --no-install-recommends pkg-config libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev \
-      libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev \
+ && apt-get install -y --no-install-recommends pkg-config libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # OpenCV

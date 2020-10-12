@@ -3,7 +3,7 @@ COPY * /root/go/baetyl-video-infer/
 RUN cd /root/go/baetyl-video-infer/ && \
     make build GO_TAGS="-tags openvino"
 
-FROM hub.baidubce.com/baetyl/openvino_runtime:2020.4
+FROM hub.baidubce.com/baetyl/openvino-runtime:2020.4
 
 USER root
 WORKDIR /
