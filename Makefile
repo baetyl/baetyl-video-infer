@@ -16,7 +16,7 @@ GO_BUILD := $(GO_ENV) $(GO) build $(GO_TAGS) $(GO_FLAGS)
 
 XFLAGS     := --push
 XPLATFORMS := linux/amd64,linux/arm64,linux/arm/v7
-REGISTRY   := baetyltech
+REGISTRY   := baetyl
 
 .PHONY: all
 all: build test
