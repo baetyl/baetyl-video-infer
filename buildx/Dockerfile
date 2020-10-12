@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM hub.baidubce.com/baetyl/gocv-devel:v0.24.0 as devel
+FROM --platform=$TARGETPLATFORM baetyltech/gocv-devel:v0.24.0 as devel
 COPY * /root/go/baetyl-video-infer/
 RUN cd /root/go/baetyl-video-infer/ && \
     make build
@@ -17,6 +17,6 @@ ENV PKG_CONFIG_PATH /usr/local/lib/pkgconfig
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 # baetyl-video-infer
-COPY --from=devel /root/go/baetyl-video-infer/baetyl-video-infer /bin/
+COPY --from=devel /root/go/baetyl-video-infer/output/baetyl-video-infer /bin/
 
 ENTRYPOINT ["baetyl-video-infer"]

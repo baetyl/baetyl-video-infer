@@ -24,6 +24,11 @@ make image # build image for CPU
 
 # OpenVINO(OpenCL)
 make image-openvino # build image for OpenVINO
+
+# output images 
+docker images | grep baetyl/video-infer
+# baetyl/video-infer-openvino                                      git-e7ed6d0                                      4d89e690b226        About an hour ago   2.53GB
+# baetyl/video-infer                                               git-e7ed6d0                                      ccab5f4b07ff        3 hours ago         672MB
 ```
 
 **NOTE**: 
