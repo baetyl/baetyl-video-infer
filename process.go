@@ -72,7 +72,7 @@ func NewProcess(cfg ProcessInfo, bc *mqtt.Client, fc *http.Client) *Process {
 		cfg:  cfg,
 		bc:   bc,
 		fc:   fc,
-		size: image.Pt(cfg.Before.Width, cfg.Before.Hight),
+		size: image.Pt(cfg.Before.Width, cfg.Before.Height),
 		mean: gocv.NewScalar(cfg.Before.Mean.V1, cfg.Before.Mean.V2, cfg.Before.Mean.V3, cfg.Before.Mean.V4),
 	}
 }
@@ -124,7 +124,7 @@ func (p *Process) After(img gocv.Mat, results gocv.Mat, elapsedTime float64, cap
 	}
 
 	cnt["imageWidth"] = img.Cols()
-	cnt["imageHight"] = img.Rows()
+	cnt["imageHeight"] = img.Rows()
 	cnt["imageCaptureTime"] = captureTime
 	cnt["imageInferenceTime"] = elapsedTime
 	cnt["imageProcessTime"] = (time.Since(s)).Seconds() + elapsedTime

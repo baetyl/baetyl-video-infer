@@ -8,7 +8,7 @@ process:
   before:
     swaprb: true
     width: 300
-    hight: 300
+    height: 300
   infer:
     model: var/lib/baetyl/model/frozen_inference_graph.pb
     config: var/lib/baetyl/model/ssd_mobilenet_v1_coco_2017_11_17.pbtxt

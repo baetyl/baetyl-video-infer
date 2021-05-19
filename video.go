@@ -29,7 +29,7 @@ type Video struct {
 
 	fps   float64
 	width float64
-	hight float64
+	height float64
 	skip  int
 }
 
@@ -68,10 +68,10 @@ func (v *Video) reopen() error {
 	v.cap = cap
 	v.fps = cap.Get(gocv.VideoCaptureFPS)
 	v.width = cap.Get(gocv.VideoCaptureFrameWidth)
-	v.hight = cap.Get(gocv.VideoCaptureFrameHeight)
+	v.height = cap.Get(gocv.VideoCaptureFrameHeight)
 	if v.cfg.Limit.FPS > 0 {
 		v.skip = int(math.Ceil((v.fps / v.cfg.Limit.FPS))) - 1
 	}
-	log.L().Sugar().Infof("fps: %f, width: %f, hight: %f, skip: %d", v.fps, v.width, v.hight, v.skip)
+	log.L().Sugar().Infof("fps: %f, width: %f, height: %f, skip: %d", v.fps, v.width, v.height, v.skip)
 	return nil
 }
