@@ -27,7 +27,7 @@ type ProcessInfo struct {
 	Before struct {
 		Scale float64 `yaml:"scale" json:"scale" default:"1.0"`
 		Width int     `yaml:"width" json:"width"`
-		Hight int     `yaml:"hight" json:"hight"`
+		Height int     `yaml:"height" json:"height"`
 		Mean  struct {
 			V1 float64 `yaml:"v1" json:"v1"`
 			V2 float64 `yaml:"v2" json:"v2"`

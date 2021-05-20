@@ -55,7 +55,7 @@ process:
     scale: multiplier for image values.
     swaprb: flag which indicates that swap first and last channels in 3-channel image is necessary. 
     width: width of spatial size for output image.
-    hight: hight of spatial size for output image.
+    height: height of spatial size for output image.
     mean: scalar with mean values which are subtracted from channels. Values are intended to be in (mean-R, mean-G, mean-B) order if image has BGR ordering and swapRB is true.
       v1: blue component of type Scalar(Scalar is a 4-element(v1, v2, v3, v4) vector widely used in OpenCV to pass pixel values).
       v2: green component of type Scalar.
